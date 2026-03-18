@@ -36,6 +36,18 @@ const ui = {
   speak(message) {
     this.petSpeech.textContent = message;
   },
+
+  showGameOvermessage(message) {
+    this.petSpeech.textContent = "";
+    this.gameOverText.textContent = message;
+    this.gameOverContainer.classList.remove("hidden");
+    this.petInfoContainer.classList.add("hidden");
+  },
+
+    hideGameOvermessage() {
+    this.gameOverContainer.classList.add("hidden");
+    this.petInfoContainer.classList.remove("hidden");
+  },
 };
 
 const game = {
@@ -48,7 +60,7 @@ const game = {
   },
 
   start() {
-    this.timer = setInterval(game.timePass, 2000);
+    this.timer = setInterval(game.timePass, 500);
   },
 
   Stop() {
@@ -56,7 +68,6 @@ const game = {
   },
 
   checkGameOver() {
-    // check game over
     if (pet.energy <= 0) {
       this.gameOver();
     }
