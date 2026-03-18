@@ -4,9 +4,23 @@ const pet = {
 
   rest() {
     if (this.energy <= 80) {
-      this.energy = Math.min(this.energy + 10, 100);     
+      this.energy = Math.min(this.energy + 10, 100);
+      console.log("tired");
+    } else {
+      console.log("not tired");
     }
     console.log(this.energy);
+  },
+};
+
+const ui = {
+  energyBar: document.getElementById("energyBar"),
+  energyValue: document.getElementById("energyValue"),
+  restButton: document.getElementById("rest"),
+
+  update() {
+    this.energyBar.value = pet.energy;
+    this.energyValue.textContent = pet.energy;
   },
 };
 // #endregion
@@ -17,10 +31,6 @@ function handleRestClick() {
 }
 // #endregion
 
-// #region Variables
-const restButton = document.getElementById("rest");
-// #endregion
-
 // #region Event Listeners
-restButton.addEventListener("click", handleRestClick);
+ui.restButton.addEventListener("click", handleRestClick);
 // #endregion

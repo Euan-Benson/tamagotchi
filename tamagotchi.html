@@ -1,5 +1,5 @@
 <!-- learner template - all id's removed but HTML left in which have classes on them -->
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en-gb">
   <head>
     <meta charset="UTF-8" />
@@ -8,30 +8,22 @@
     <link rel="stylesheet" href="tamagotchi.css" />
   </head>
   <body>
-    <header>
-    </header>
+    <header></header>
 
     <main>
       <section class="pet-info-container">
         <input type="text" placeholder="Name your pet..." />
         <section class="pet-container">
           <p class="pet-name">Your Pet</p>
-          <img class="pet-image"/>
+          <img class="pet-image" />
           <p class="speech-bubble"></p>
         </section>
       </section>
-      <section class="hidden">
-      </section>
+      <section class="hidden"></section>
       <section class="status-bar">
         <section class="stat">
-          <label
-            >Energy <span class="stat-value"></span></label
-          >
-          <progress
-            max="100"
-            value="50"
-            class="green"
-          ></progress>
+          <label for="energyBar">Energy <span class="stat-value"></span id="statValue"></label>
+          <progress max="100" value="50" class="green" id="energyBar"></progress>
         </section>
       </section>
 
@@ -40,8 +32,7 @@
       </section>
     </main>
 
-    <footer>
-    </footer>
+    <footer></footer>
 
     <script src="tamagotchi.js"></script>
   </body>
