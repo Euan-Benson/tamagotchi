@@ -1,17 +1,19 @@
 // #region Objects
 const pet = {
-    energy: 50,
+  energy: 50,
 
-    rest(){
-        this.energy += 10;
-        console.log(this.energy);
-    },
-}
+  rest() {
+    if (this.energy <= 80) {
+      this.energy = Math.min(this.energy + 10, 100);     
+    }
+    console.log(this.energy);
+  },
+};
 // #endregion
 
 // #region Functions
-function handleRestClick(){
-    pet.rest();
+function handleRestClick() {
+  pet.rest();
 }
 // #endregion
 
@@ -20,5 +22,5 @@ const restButton = document.getElementById("rest");
 // #endregion
 
 // #region Event Listeners
- restButton.addEventListener("click", handleRestClick);
+restButton.addEventListener("click", handleRestClick);
 // #endregion
