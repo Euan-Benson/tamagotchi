@@ -9,7 +9,6 @@ const pet = {
     } else {
       console.log("not tired");
     }
-    console.log(this.energy);
   },
 };
 
@@ -20,7 +19,9 @@ const ui = {
 
   update() {
     this.energyBar.value = pet.energy;
+    //add text to html with id 
     this.energyValue.textContent = pet.energy;
+    this.restButton.classList.toggle("inactive", pet.energy > 80);
   },
 };
 // #endregion
@@ -28,6 +29,7 @@ const ui = {
 // #region Functions
 function handleRestClick() {
   pet.rest();
+  ui.update();
 }
 // #endregion
 
