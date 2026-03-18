@@ -11,8 +11,8 @@ const pet = {
     }
   },
 
-  Decay(){
-    this.energy = Math.max(this.energy - 1,0);
+  Decay() {
+    this.energy = Math.max(this.energy - 1, 0);
   },
 };
 
@@ -21,6 +21,10 @@ const ui = {
   energyValue: document.getElementById("energyValue"),
   restButton: document.getElementById("rest"),
   petSpeech: document.getElementById("petSpeech"),
+  restartButton: document.getElementById("restartButton"),
+  petInfoContainer: document.querySelector(".pet-info-container"),
+  gameOverText: document.getElementById("gameOverText"),
+  gameOverContainer: document.getElementById("gameOverContainer"),
 
   update() {
     this.energyBar.value = pet.energy;
@@ -36,6 +40,7 @@ const ui = {
 
 const game = {
   timer: null,
+  isGameOver: false,
 
   timePass() {
     pet.Decay();
@@ -43,11 +48,31 @@ const game = {
   },
 
   start() {
-    this.timer = setInterval(game.timePass, 500);
+    this.timer = setInterval(game.timePass, 2000);
   },
 
   Stop() {
     clearInterval(this.timer);
+  },
+
+  checkGameOver() {
+    // check game over
+    if (pet.energy <= 0) {
+      this.gameOver();
+    }
+  },
+
+  gameOver() {
+    //do game over stuff
+    this.isGameOver = true;
+    this.Stop();
+    //game over message
+    //disable buttons
+  },
+
+  restart() {
+    //restart game
+    this.isGameOver = false;
   },
 };
 // #endregion
