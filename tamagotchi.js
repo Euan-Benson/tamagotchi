@@ -5,10 +5,14 @@ const pet = {
   rest() {
     if (this.energy <= 80) {
       this.energy = Math.min(this.energy + 10, 100);
-      ui.speak("Napping")
+      ui.speak("Napping");
     } else {
       ui.speak("I'm not tired");
     }
+  },
+
+  Decay(){
+    this.energy = Math.max(this.energy - 1,0);
   },
 };
 
@@ -29,6 +33,23 @@ const ui = {
     this.petSpeech.textContent = message;
   },
 };
+
+const game = {
+  timer: null,
+
+  timePass() {
+    pet.Decay();
+    ui.update();
+  },
+
+  start() {
+    this.timer = setInterval(game.timePass, 500);
+  },
+
+  Stop() {
+    clearInterval(this.timer);
+  },
+};
 // #endregion
 
 // #region Functions
@@ -38,6 +59,8 @@ function handleRestClick() {
 }
 // #endregion
 
-// #region Event Listeners
+// #region Events
 ui.restButton.addEventListener("click", handleRestClick);
+
+game.start();
 // #endregion
