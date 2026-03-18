@@ -5,9 +5,9 @@ const pet = {
   rest() {
     if (this.energy <= 80) {
       this.energy = Math.min(this.energy + 10, 100);
-      console.log("tired");
+      ui.speak("Napping")
     } else {
-      console.log("not tired");
+      ui.speak("I'm not tired");
     }
   },
 };
@@ -16,12 +16,17 @@ const ui = {
   energyBar: document.getElementById("energyBar"),
   energyValue: document.getElementById("energyValue"),
   restButton: document.getElementById("rest"),
+  petSpeech: document.getElementById("petSpeech"),
 
   update() {
     this.energyBar.value = pet.energy;
-    //add text to html with id 
+    //add text to html with id
     this.energyValue.textContent = pet.energy;
     this.restButton.classList.toggle("inactive", pet.energy > 80);
+  },
+
+  speak(message) {
+    this.petSpeech.textContent = message;
   },
 };
 // #endregion
