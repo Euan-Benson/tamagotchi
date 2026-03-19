@@ -2,10 +2,13 @@
 const pet = {
   energy: 50,
   happiness: 50,
+  hunger: 50,
 
   rest() {
     if (this.energy <= 80) {
       this.energy = Math.min(this.energy + 10, 100);
+      this.happiness = Math.min(this.happiness + 2, 100);
+      this.hunger = Math.max(this.hunger + 5, 0);
       ui.speak("Napping");
     } else {
       ui.speak("I'm not tired");
@@ -14,16 +17,30 @@ const pet = {
 
   play() {
     if (this.happiness <= 80) {
+      this.energy = Math.min(this.energy - 5, 100);
       this.happiness = Math.min(this.happiness + 10, 100);
+      this.hunger = Math.max(this.hunger + 5, 0);
       ui.speak("Playing");
     } else {
-      ui.speak("Too tired to play");
+      ui.speak("I don't wanna play");
+    }
+  },
+
+  feed() {
+    if (this.hunger >= 20) {
+      this.energy = Math.min(this.energy + 2, 100);
+      this.happiness = Math.min(this.happiness + 10, 100);
+      this.hunger = Math.max(this.hunger - 10, 0);
+      ui.speak("Eating");
+    } else {
+      ui.speak("I don't wanna eat");
     }
   },
 
   Decay() {
     this.energy = Math.max(this.energy - 1, 0);
     this.happiness = Math.max(this.happiness - 2, 0);
+    this.hunger = Math.max(this.hunger + 1, 0);
   },
 };
 
@@ -37,6 +54,11 @@ const ui = {
   happyBar: document.getElementById("happyBar"),
   happyValue: document.getElementById("happyValue"),
   playButton: document.getElementById("play"),
+
+  //hunger related
+  hungerBar: document.getElementById("hungerBar"),
+  hungerValue: document.getElementById("hungerValue"),
+  feedButton: document.getElementById("feed"),
 
   petSpeech: document.getElementById("petSpeech"),
   restartButton: document.getElementById("restartButton"),
@@ -63,11 +85,15 @@ const ui = {
     this.energyBar.value = pet.energy;
     this.energyValue.textContent = pet.energy;
     this.restButton.classList.toggle("inactive", pet.energy > 80);
+    this.barColour(this.energyBar);
     this.happyBar.value = pet.happiness;
     this.happyValue.textContent = pet.happiness;
     this.playButton.classList.toggle("inactive", pet.happiness > 80);
-    this.barColour(this.energyBar);
     this.barColour(this.happyBar);
+    this.hungerBar.value = pet.hunger;
+    this.hungerValue.textContent = pet.hunger;
+    this.feedButton.classList.toggle("inactive", pet.hunger < 20);
+    this.barColour(this.hungerBar);
   },
 
   speak(message) {
@@ -88,10 +114,14 @@ const ui = {
 
   disableAllButtons() {
     this.restButton.disabled = true;
+    this.playButton.disabled = true;
+    this.feedButton.disabled = true;
   },
 
   enableAllButtons() {
     this.restButton.disabled = false;
+    this.playButton.disabled = false;
+    this.feedButton.disabled = false;
   },
 };
 
@@ -118,7 +148,7 @@ const game = {
   },
 
   checkGameOver() {
-    if (pet.energy <= 0 || pet.happiness <= 0) {
+    if (pet.energy <= 0 || pet.happiness <= 0 || pet.hunger >= 100) {
       this.gameOver();
     }
   },
@@ -134,6 +164,7 @@ const game = {
     //restart game
     pet.energy = 50;
     pet.happiness = 50;
+    pet.hunger = 50;
     this.isGameOver = false;
     ui.hideGameOvermessage();
     ui.enableAllButtons();
@@ -154,6 +185,11 @@ function handlePlayClick() {
   ui.update();
 }
 
+function handleFeedClick() {
+  pet.feed();
+  ui.update();
+}
+
 function handleResetClick() {
   game.restart();
 }
@@ -162,6 +198,7 @@ function handleResetClick() {
 // #region Events
 ui.restButton.addEventListener("click", handleRestClick);
 ui.playButton.addEventListener("click", handlePlayClick);
+ui.feedButton.addEventListener("click", handleFeedClick);
 ui.restartButton.addEventListener("click", handleResetClick);
 
 game.start();
