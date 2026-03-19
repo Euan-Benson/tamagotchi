@@ -66,6 +66,14 @@ const ui = {
   gameOverText: document.getElementById("gameOverText"),
   gameOverContainer: document.getElementById("gameOverContainer"),
 
+  petNameInput: document.getElementById("inputName"),
+  petNameDisplay: document.getElementById("displayName"),
+
+  changePetName(){
+    const name = this.petNameInput.value.trim();
+    this.petNameDisplay.textContent = name || "Your Pet";
+  },
+
   barColour(bar, value) {
     if (value < 25) {
       bar.classList.remove("orange");
@@ -175,6 +183,10 @@ const game = {
 // #endregion
 
 // #region Functions
+function handlePetName(){
+  ui.changePetName();
+}
+
 function handleRestClick() {
   pet.rest();
   ui.update();
@@ -196,6 +208,7 @@ function handleResetClick() {
 // #endregion
 
 // #region Events
+ui.petNameInput.addEventListener("input", handlePetName);
 ui.restButton.addEventListener("click", handleRestClick);
 ui.playButton.addEventListener("click", handlePlayClick);
 ui.feedButton.addEventListener("click", handleFeedClick);
