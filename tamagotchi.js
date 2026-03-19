@@ -26,11 +26,27 @@ const ui = {
   gameOverText: document.getElementById("gameOverText"),
   gameOverContainer: document.getElementById("gameOverContainer"),
 
+  barColour(bar) {
+    if (bar < 25) {
+      this.energyBar.classList.remove("orange");
+      this.energyBar.classList.add("red");
+    } else if (bar < 45) {
+      this.energyBar.classList.remove("green");
+      this.energyBar.classList.remove("red");
+      this.energyBar.classList.add("orange");
+    } else {
+      this.energyBar.classList.remove("red");
+      this.energyBar.classList.remove("orange");
+      this.energyBar.classList.add("green");
+    }
+  },
+
   update() {
     this.energyBar.value = pet.energy;
     //add text to html with id
     this.energyValue.textContent = pet.energy;
     this.restButton.classList.toggle("inactive", pet.energy > 80);
+    this.barColour(this.energyBar.value);
   },
 
   speak(message) {
