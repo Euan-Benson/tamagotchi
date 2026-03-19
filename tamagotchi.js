@@ -29,7 +29,7 @@ const pet = {
   feed() {
     if (this.hunger >= 20) {
       this.energy = Math.min(this.energy + 2, 100);
-      this.happiness = Math.min(this.happiness + 10, 100);
+      this.happiness = Math.min(this.happiness + 2, 100);
       this.hunger = Math.max(this.hunger - 10, 0);
       ui.speak("Eating");
     } else {
@@ -66,11 +66,11 @@ const ui = {
   gameOverText: document.getElementById("gameOverText"),
   gameOverContainer: document.getElementById("gameOverContainer"),
 
-  barColour(bar) {
-    if (bar.value < 25) {
+  barColour(bar, value) {
+    if (value < 25) {
       bar.classList.remove("orange");
       bar.classList.add("red");
-    } else if (bar.value < 45) {
+    } else if (value < 45) {
       bar.classList.remove("green");
       bar.classList.remove("red");
       bar.classList.add("orange");
@@ -85,15 +85,15 @@ const ui = {
     this.energyBar.value = pet.energy;
     this.energyValue.textContent = pet.energy;
     this.restButton.classList.toggle("inactive", pet.energy > 80);
-    this.barColour(this.energyBar);
+    this.barColour(this.energyBar, this.energyBar.value);
     this.happyBar.value = pet.happiness;
     this.happyValue.textContent = pet.happiness;
     this.playButton.classList.toggle("inactive", pet.happiness > 80);
-    this.barColour(this.happyBar);
+    this.barColour(this.happyBar, this.happyBar.value);
     this.hungerBar.value = pet.hunger;
     this.hungerValue.textContent = pet.hunger;
     this.feedButton.classList.toggle("inactive", pet.hunger < 20);
-    this.barColour(this.hungerBar);
+    this.barColour(this.hungerBar, 100 - this.hungerBar.value);
   },
 
   speak(message) {
