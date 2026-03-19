@@ -44,9 +44,17 @@ const ui = {
     this.petInfoContainer.classList.add("hidden");
   },
 
-    hideGameOvermessage() {
+  hideGameOvermessage() {
     this.gameOverContainer.classList.add("hidden");
     this.petInfoContainer.classList.remove("hidden");
+  },
+
+  disableAllButtons() {
+    this.restButton.disabled = true;
+  },
+
+  enableAllButtons() {
+    this.restButton.disabled = false;
   },
 };
 
@@ -55,15 +63,20 @@ const game = {
   isGameOver: false,
 
   timePass() {
-    pet.Decay();
-    ui.update();
+    if (this.gameOver) {
+      return;
+    } else {
+      pet.Decay();
+      ui.update();
+      game.checkGameOver();
+    }
   },
-
+  
   start() {
     this.timer = setInterval(game.timePass, 500);
   },
 
-  Stop() {
+  stop() {
     clearInterval(this.timer);
   },
 
@@ -74,11 +87,10 @@ const game = {
   },
 
   gameOver() {
-    //do game over stuff
     this.isGameOver = true;
-    this.Stop();
-    //game over message
-    //disable buttons
+    this.stop();
+    ui.showGameOvermessage("They died :(");
+    ui.disableAllButtons();
   },
 
   restart() {
