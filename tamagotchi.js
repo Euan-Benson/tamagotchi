@@ -1,6 +1,7 @@
 // #region Objects
 const pet = {
   energy: 50,
+  happiness: 50,
 
   rest() {
     if (this.energy <= 80) {
@@ -11,15 +12,32 @@ const pet = {
     }
   },
 
+  play() {
+    if (this.happiness <= 80) {
+      this.happiness = Math.min(this.happiness + 10, 100);
+      ui.speak("Playing");
+    } else {
+      ui.speak("Too tired to play");
+    }
+  },
+
   Decay() {
     this.energy = Math.max(this.energy - 1, 0);
+    this.happiness = Math.max(this.happiness - 2, 0);
   },
 };
 
 const ui = {
+  //energy related
   energyBar: document.getElementById("energyBar"),
   energyValue: document.getElementById("energyValue"),
   restButton: document.getElementById("rest"),
+
+  //happiness related
+  happyBar: document.getElementById("happyBar"),
+  happyValue: document.getElementById("happyValue"),
+  playButton: document.getElementById("play"),
+
   petSpeech: document.getElementById("petSpeech"),
   restartButton: document.getElementById("restartButton"),
   petInfoContainer: document.querySelector(".pet-info-container"),
@@ -27,26 +45,29 @@ const ui = {
   gameOverContainer: document.getElementById("gameOverContainer"),
 
   barColour(bar) {
-    if (bar < 25) {
-      this.energyBar.classList.remove("orange");
-      this.energyBar.classList.add("red");
-    } else if (bar < 45) {
-      this.energyBar.classList.remove("green");
-      this.energyBar.classList.remove("red");
-      this.energyBar.classList.add("orange");
+    if (bar.value < 25) {
+      bar.classList.remove("orange");
+      bar.classList.add("red");
+    } else if (bar.value < 45) {
+      bar.classList.remove("green");
+      bar.classList.remove("red");
+      bar.classList.add("orange");
     } else {
-      this.energyBar.classList.remove("red");
-      this.energyBar.classList.remove("orange");
-      this.energyBar.classList.add("green");
+      bar.classList.remove("red");
+      bar.classList.remove("orange");
+      bar.classList.add("green");
     }
   },
 
   update() {
     this.energyBar.value = pet.energy;
-    //add text to html with id
     this.energyValue.textContent = pet.energy;
     this.restButton.classList.toggle("inactive", pet.energy > 80);
-    this.barColour(this.energyBar.value);
+    this.happyBar.value = pet.happiness;
+    this.happyValue.textContent = pet.happiness;
+    this.playButton.classList.toggle("inactive", pet.happiness > 80);
+    this.barColour(this.energyBar);
+    this.barColour(this.happyBar);
   },
 
   speak(message) {
@@ -97,7 +118,7 @@ const game = {
   },
 
   checkGameOver() {
-    if (pet.energy <= 0) {
+    if (pet.energy <= 0 || pet.happiness <= 0) {
       this.gameOver();
     }
   },
@@ -112,6 +133,7 @@ const game = {
   restart() {
     //restart game
     pet.energy = 50;
+    pet.happiness = 50;
     this.isGameOver = false;
     ui.hideGameOvermessage();
     ui.enableAllButtons();
@@ -127,6 +149,11 @@ function handleRestClick() {
   ui.update();
 }
 
+function handlePlayClick() {
+  pet.play();
+  ui.update();
+}
+
 function handleResetClick() {
   game.restart();
 }
@@ -134,6 +161,7 @@ function handleResetClick() {
 
 // #region Events
 ui.restButton.addEventListener("click", handleRestClick);
+ui.playButton.addEventListener("click", handlePlayClick);
 ui.restartButton.addEventListener("click", handleResetClick);
 
 game.start();
