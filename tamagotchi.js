@@ -71,7 +71,7 @@ const game = {
       game.checkGameOver();
     }
   },
-  
+
   start() {
     this.timer = setInterval(game.timePass, 500);
   },
@@ -95,7 +95,12 @@ const game = {
 
   restart() {
     //restart game
+    pet.energy = 50;
     this.isGameOver = false;
+    ui.hideGameOvermessage();
+    ui.enableAllButtons();
+    ui.update();
+    this.start();
   },
 };
 // #endregion
@@ -105,10 +110,15 @@ function handleRestClick() {
   pet.rest();
   ui.update();
 }
+
+function handleResetClick() {
+  game.restart();
+}
 // #endregion
 
 // #region Events
 ui.restButton.addEventListener("click", handleRestClick);
+ui.restartButton.addEventListener("click", handleResetClick);
 
 game.start();
 // #endregion
