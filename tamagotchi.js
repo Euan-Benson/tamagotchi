@@ -1,4 +1,22 @@
 // #region Objects
+
+class petDifficultyMode {
+  constructor(baseEne, baseHapp, baseHun, decayEne, deacyHapp, decayHun) {
+    this.baseEne = baseEne;
+    this.baseHapp = baseHapp;
+    this.baseHun = baseHun;
+    this.decayEne = decayEne;
+    this.deacyHapp = deacyHapp;
+    this.decayHun = decayHun;
+  }
+
+  DecayMode() {
+    this.baseEne = Math.max(this.baseEne - decayEne, 0);
+    this.baseHapp = Math.max(this.baseHapp - deacyHapp, 0);
+    this.baseHun = Math.max(this.baseHun + decayHun, 0);
+  }
+}
+
 const pet = {
   energy: 50,
   happiness: 50,
@@ -69,7 +87,7 @@ const ui = {
   petNameInput: document.getElementById("inputName"),
   petNameDisplay: document.getElementById("displayName"),
 
-  changePetName(){
+  changePetName() {
     const name = this.petNameInput.value.trim();
     this.petNameDisplay.textContent = name || "Your Pet";
   },
@@ -183,7 +201,7 @@ const game = {
 // #endregion
 
 // #region Functions
-function handlePetName(){
+function handlePetName() {
   ui.changePetName();
 }
 
