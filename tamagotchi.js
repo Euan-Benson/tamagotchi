@@ -11,7 +11,7 @@ class PetDifficulty {
       case "easy":
         this.energy = 60;
         this.happiness = 60;
-        this.hunger = 60;
+        this.hunger = 40;
         this.decayRate = 1;
         break;
       case "medium":
@@ -23,7 +23,7 @@ class PetDifficulty {
       case "hard":
         this.energy = 40;
         this.happiness = 40;
-        this.hunger = 40;
+        this.hunger = 60;
         this.decayRate = 3;
         break;
     }
@@ -73,27 +73,30 @@ class PetDifficulty {
 class UI {
   constructor() {
     this.pet = null;
-    //energy related
+
+    //energy
     this.energyBar = document.getElementById("energyBar");
     this.energyValue = document.getElementById("energyValue");
     this.restButton = document.getElementById("rest");
 
-    //happiness related
+    //happiness
     this.happyBar = document.getElementById("happyBar");
     this.happyValue = document.getElementById("happyValue");
     this.playButton = document.getElementById("play");
 
-    //hunger related
+    //hunger
     this.hungerBar = document.getElementById("hungerBar");
     this.hungerValue = document.getElementById("hungerValue");
     this.feedButton = document.getElementById("feed");
 
+    //buttons
     this.petSpeech = document.getElementById("petSpeech");
     this.restartButton = document.getElementById("restartButton");
     this.petInfoContainer = document.querySelector(".pet-info-container");
     this.gameOverText = document.getElementById("gameOverText");
     this.gameOverContainer = document.getElementById("gameOverContainer");
 
+    //pet name
     this.petNameInput = document.getElementById("inputName");
     this.petNameDisplay = document.getElementById("displayName");
 
@@ -125,17 +128,17 @@ class UI {
   }
 
   update() {
-    this.energyBar.value = pet.energy;
-    this.energyValue.textContent = pet.energy;
-    this.restButton.classList.toggle("inactive", pet.energy > 80);
+    this.energyBar.value = this.pet.energy;
+    this.energyValue.textContent = this.pet.energy;
+    this.restButton.classList.toggle("inactive", this.pet.energy > 80);
     this.barColour(this.energyBar, this.energyBar.value);
-    this.happyBar.value = pet.happiness;
-    this.happyValue.textContent = pet.happiness;
-    this.playButton.classList.toggle("inactive", pet.happiness > 80);
+    this.happyBar.value = this.pet.happiness;
+    this.happyValue.textContent = this.pet.happiness;
+    this.playButton.classList.toggle("inactive", this.pet.happiness > 80);
     this.barColour(this.happyBar, this.happyBar.value);
-    this.hungerBar.value = pet.hunger;
-    this.hungerValue.textContent = pet.hunger;
-    this.feedButton.classList.toggle("inactive", pet.hunger < 20);
+    this.hungerBar.value = this.pet.hunger;
+    this.hungerValue.textContent = this.pet.hunger;
+    this.feedButton.classList.toggle("inactive", this.pet.hunger < 20);
     this.barColour(this.hungerBar, 100 - this.hungerBar.value);
   }
 
@@ -178,14 +181,14 @@ class Game {
   }
 
   timePass = () => {
-    if (this.gameOver) return;
+    if (this.isGameOver) return;
     this.pet.Decay();
     this.ui.update();
     this.checkGameOver();
   };
 
   start() {
-    this.timer = setInterval(this.timePass, 500);
+    this.timer = setInterval(this.timePass, 1500);
   }
 
   stop() {
@@ -193,7 +196,7 @@ class Game {
   }
 
   checkGameOver() {
-    if (pet.energy <= 0 || pet.happiness <= 0 || pet.hunger >= 100) {
+    if (this.pet.energy <= 0 || this.pet.happiness <= 0 || this.pet.hunger >= 100) {
       this.gameOver();
     }
   }
@@ -221,7 +224,7 @@ class Game {
 
 const ui = new UI();
 
-const pet = new PetDifficulty(ui, ui.difficulty.value);
+const pet = new PetDifficulty(ui, ui.difficultySelect.value);
 ui.setPet(pet);
 
 const game = new Game(pet, ui);
@@ -243,7 +246,7 @@ function handleFeedClick() {
   pet.feed();
 }
 
-function handleResetClick() {
+function handleRestartClick() {
   game.restart();
 }
 // #endregion
@@ -253,8 +256,9 @@ ui.petNameInput.addEventListener("input", handlePetName);
 ui.restButton.addEventListener("click", handleRestClick);
 ui.playButton.addEventListener("click", handlePlayClick);
 ui.feedButton.addEventListener("click", handleFeedClick);
-ui.difficultySelect.addEventListener("input", handleResetClick);
-ui.restartButton.addEventListener("click", handleResetClick);
+ui.difficultySelect.addEventListener("input", handleRestartClick);
+ui.restartButton.addEventListener("click", handleRestartClick);
 
+ui.update();
 game.start();
 // #endregion
