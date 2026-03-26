@@ -1,66 +1,74 @@
 // #region Objects
+class PetDifficulty {
+  constructor(ui, difficulty = "medium") {
+    this.energy = 50;
+    this.happiness = 50;
+    this.hunger = 50;
+    this.decayRate = 2;
+    this.ui = ui;
 
-class petDifficultyMode {
-  constructor(baseEne, baseHapp, baseHun, decayEne, deacyHapp, decayHun) {
-    this.baseEne = baseEne;
-    this.baseHapp = baseHapp;
-    this.baseHun = baseHun;
-    this.decayEne = decayEne;
-    this.deacyHapp = deacyHapp;
-    this.decayHun = decayHun;
+    switch (difficulty) {
+      case "easy":
+        this.energy = 60;
+        this.happiness = 60;
+        this.hunger = 60;
+        this.decayRate = 1;
+        break;
+      case "medium":
+        this.energy = 50;
+        this.happiness = 50;
+        this.hunger = 50;
+        this.decayRate = 2;
+        break;
+      case "hard":
+        this.energy = 40;
+        this.happiness = 40;
+        this.hunger = 40;
+        this.decayRate = 3;
+        break;
+    }
   }
-
-  DecayMode() {
-    this.baseEne = Math.max(this.baseEne - decayEne, 0);
-    this.baseHapp = Math.max(this.baseHapp - deacyHapp, 0);
-    this.baseHun = Math.max(this.baseHun + decayHun, 0);
-  }
-}
-
-const pet = {
-  energy: 50,
-  happiness: 50,
-  hunger: 50,
 
   rest() {
     if (this.energy <= 80) {
       this.energy = Math.min(this.energy + 10, 100);
-      this.happiness = Math.min(this.happiness + 2, 100);
-      this.hunger = Math.max(this.hunger + 5, 0);
-      ui.speak("Napping");
+      //this.happiness = Math.min(this.happiness + 2, 100);
+      //this.hunger = Math.max(this.hunger + 5, 0);
+      this.ui.speak("Napping");
     } else {
-      ui.speak("I'm not tired");
+      this.ui.speak("I'm not tired");
     }
-  },
+    this.ui.update();
+  }
 
   play() {
     if (this.happiness <= 80) {
-      this.energy = Math.min(this.energy - 5, 100);
+      //this.energy = Math.min(this.energy - 5, 100);
       this.happiness = Math.min(this.happiness + 10, 100);
-      this.hunger = Math.max(this.hunger + 5, 0);
-      ui.speak("Playing");
+      //this.hunger = Math.max(this.hunger + 5, 0);
+      this.ui.speak("Playing");
     } else {
-      ui.speak("I don't wanna play");
+      this.ui.speak("I don't wanna play");
     }
-  },
+  }
 
   feed() {
     if (this.hunger >= 20) {
-      this.energy = Math.min(this.energy + 2, 100);
-      this.happiness = Math.min(this.happiness + 2, 100);
+      //this.energy = Math.min(this.energy + 2, 100);
+      //this.happiness = Math.min(this.happiness + 2, 100);
       this.hunger = Math.max(this.hunger - 10, 0);
-      ui.speak("Eating");
+      this.ui.speak("Eating");
     } else {
-      ui.speak("I don't wanna eat");
+      this.ui.speak("I don't wanna eat");
     }
-  },
+  }
 
   Decay() {
-    this.energy = Math.max(this.energy - 1, 0);
-    this.happiness = Math.max(this.happiness - 2, 0);
-    this.hunger = Math.max(this.hunger + 1, 0);
-  },
-};
+    this.energy = Math.max(this.energy - this.decayRate, 0);
+    this.happiness = Math.max(this.happiness - this.decayRate, 0);
+    this.hunger = Math.max(this.hunger + this.decayRate, 0);
+  }
+}
 
 const ui = {
   //energy related
@@ -207,17 +215,14 @@ function handlePetName() {
 
 function handleRestClick() {
   pet.rest();
-  ui.update();
 }
 
 function handlePlayClick() {
   pet.play();
-  ui.update();
 }
 
 function handleFeedClick() {
   pet.feed();
-  ui.update();
 }
 
 function handleResetClick() {
