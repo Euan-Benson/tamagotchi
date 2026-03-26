@@ -70,35 +70,44 @@ class PetDifficulty {
   }
 }
 
-const ui = {
-  //energy related
-  energyBar: document.getElementById("energyBar"),
-  energyValue: document.getElementById("energyValue"),
-  restButton: document.getElementById("rest"),
+class UI {
+  constructor() {
+    this.pet = null;
+    //energy related
+    this.energyBar = document.getElementById("energyBar");
+    this.energyValue = document.getElementById("energyValue");
+    this.restButton = document.getElementById("rest");
 
-  //happiness related
-  happyBar: document.getElementById("happyBar"),
-  happyValue: document.getElementById("happyValue"),
-  playButton: document.getElementById("play"),
+    //happiness related
+    this.happyBar = document.getElementById("happyBar");
+    this.happyValue = document.getElementById("happyValue");
+    this.playButton = document.getElementById("play");
 
-  //hunger related
-  hungerBar: document.getElementById("hungerBar"),
-  hungerValue: document.getElementById("hungerValue"),
-  feedButton: document.getElementById("feed"),
+    //hunger related
+    this.hungerBar = document.getElementById("hungerBar");
+    this.hungerValue = document.getElementById("hungerValue");
+    this.feedButton = document.getElementById("feed");
 
-  petSpeech: document.getElementById("petSpeech"),
-  restartButton: document.getElementById("restartButton"),
-  petInfoContainer: document.querySelector(".pet-info-container"),
-  gameOverText: document.getElementById("gameOverText"),
-  gameOverContainer: document.getElementById("gameOverContainer"),
+    this.petSpeech = document.getElementById("petSpeech");
+    this.restartButton = document.getElementById("restartButton");
+    this.petInfoContainer = document.querySelector(".pet-info-container");
+    this.gameOverText = document.getElementById("gameOverText");
+    this.gameOverContainer = document.getElementById("gameOverContainer");
 
-  petNameInput: document.getElementById("inputName"),
-  petNameDisplay: document.getElementById("displayName"),
+    this.petNameInput = document.getElementById("inputName");
+    this.petNameDisplay = document.getElementById("displayName");
+
+    this.difficultySelect = document.getElementById("difficultySelect");
+  }
+
+  setPet(pet) {
+    this.pet = pet;
+  }
 
   changePetName() {
     const name = this.petNameInput.value.trim();
     this.petNameDisplay.textContent = name || "Your Pet";
-  },
+  }
 
   barColour(bar, value) {
     if (value < 25) {
@@ -113,7 +122,7 @@ const ui = {
       bar.classList.remove("orange");
       bar.classList.add("green");
     }
-  },
+  }
 
   update() {
     this.energyBar.value = pet.energy;
@@ -128,85 +137,94 @@ const ui = {
     this.hungerValue.textContent = pet.hunger;
     this.feedButton.classList.toggle("inactive", pet.hunger < 20);
     this.barColour(this.hungerBar, 100 - this.hungerBar.value);
-  },
+  }
 
   speak(message) {
     this.petSpeech.textContent = message;
-  },
+  }
 
   showGameOvermessage(message) {
     this.petSpeech.textContent = "";
     this.gameOverText.textContent = message;
     this.gameOverContainer.classList.remove("hidden");
     this.petInfoContainer.classList.add("hidden");
-  },
+  }
 
   hideGameOvermessage() {
     this.gameOverContainer.classList.add("hidden");
     this.petInfoContainer.classList.remove("hidden");
-  },
+  }
 
   disableAllButtons() {
     this.restButton.disabled = true;
     this.playButton.disabled = true;
     this.feedButton.disabled = true;
-  },
+  }
 
   enableAllButtons() {
     this.restButton.disabled = false;
     this.playButton.disabled = false;
     this.feedButton.disabled = false;
-  },
-};
+  }
+}
 
-const game = {
-  timer: null,
-  isGameOver: false,
+class Game {
+  constructor(pet, ui) {
+    this.pet = pet;
+    this.ui = ui;
 
-  timePass() {
-    if (this.gameOver) {
-      return;
-    } else {
-      pet.Decay();
-      ui.update();
-      game.checkGameOver();
-    }
-  },
+    this.timer = null;
+    this.isGameOver = false;
+  }
+
+  timePass = () => {
+    if (this.gameOver) return;
+    this.pet.Decay();
+    this.ui.update();
+    this.checkGameOver();
+  };
 
   start() {
-    this.timer = setInterval(game.timePass, 500);
-  },
+    this.timer = setInterval(this.timePass, 500);
+  }
 
   stop() {
     clearInterval(this.timer);
-  },
+  }
 
   checkGameOver() {
     if (pet.energy <= 0 || pet.happiness <= 0 || pet.hunger >= 100) {
       this.gameOver();
     }
-  },
+  }
 
   gameOver() {
     this.isGameOver = true;
     this.stop();
-    ui.showGameOvermessage("They died :(");
-    ui.disableAllButtons();
-  },
+    this.ui.showGameOvermessage("They died :(");
+    this.ui.disableAllButtons();
+  }
 
   restart() {
-    //restart game
-    pet.energy = 50;
-    pet.happiness = 50;
-    pet.hunger = 50;
+    const currentDifficulty = this.ui.difficultySelect.value;
+    this.pet = new PetDifficulty(this.ui, currentDifficulty);
+    this.ui.setPet(this.pet);
+
     this.isGameOver = false;
-    ui.hideGameOvermessage();
-    ui.enableAllButtons();
-    ui.update();
+    this.ui.hideGameOvermessage();
+    this.ui.enableAllButtons();
+    this.ui.update();
     this.start();
-  },
-};
+  }
+}
 // #endregion
+
+const ui = new UI();
+
+const pet = new PetDifficulty(ui, ui.difficulty.value);
+ui.setPet(pet);
+
+const game = new Game(pet, ui);
 
 // #region Functions
 function handlePetName() {
@@ -235,6 +253,7 @@ ui.petNameInput.addEventListener("input", handlePetName);
 ui.restButton.addEventListener("click", handleRestClick);
 ui.playButton.addEventListener("click", handlePlayClick);
 ui.feedButton.addEventListener("click", handleFeedClick);
+ui.difficultySelect.addEventListener("input", handleResetClick);
 ui.restartButton.addEventListener("click", handleResetClick);
 
 game.start();
