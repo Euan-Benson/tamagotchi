@@ -1,4 +1,4 @@
-// #region Objects
+// #region Classes
 class PetDifficulty {
   constructor(ui, difficulty = "medium") {
     this.energy = 50;
@@ -50,6 +50,7 @@ class PetDifficulty {
     } else {
       this.ui.speak("I don't wanna play");
     }
+    this.ui.update();
   }
 
   feed() {
@@ -61,9 +62,10 @@ class PetDifficulty {
     } else {
       this.ui.speak("I don't wanna eat");
     }
+    this.ui.update();
   }
 
-  Decay() {
+  decay() {
     this.energy = Math.max(this.energy - this.decayRate, 0);
     this.happiness = Math.max(this.happiness - this.decayRate, 0);
     this.hunger = Math.max(this.hunger + this.decayRate, 0);
@@ -182,7 +184,7 @@ class Game {
 
   timePass = () => {
     if (this.isGameOver) return;
-    this.pet.Decay();
+    this.pet.decay();
     this.ui.update();
     this.checkGameOver();
   };
@@ -196,7 +198,11 @@ class Game {
   }
 
   checkGameOver() {
-    if (this.pet.energy <= 0 || this.pet.happiness <= 0 || this.pet.hunger >= 100) {
+    if (
+      this.pet.energy <= 0 ||
+      this.pet.happiness <= 0 ||
+      this.pet.hunger >= 100
+    ) {
       this.gameOver();
     }
   }
@@ -210,7 +216,7 @@ class Game {
 
   restart() {
     const currentDifficulty = this.ui.difficultySelect.value;
-    this.pet = new PetDifficulty(this.ui, currentDifficulty);
+    this.pet = new PetDifficulty(ui, currentDifficulty);
     this.ui.setPet(this.pet);
 
     this.isGameOver = false;
