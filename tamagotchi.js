@@ -259,9 +259,11 @@ function handleRestartClick() {
 
 // #region Events
 ui.petNameInput.addEventListener("input", handlePetName);
+
 ui.restButton.addEventListener("click", handleRestClick);
 ui.playButton.addEventListener("click", handlePlayClick);
 ui.feedButton.addEventListener("click", handleFeedClick);
+
 ui.difficultySelect.addEventListener("input", handleRestartClick);
 ui.restartButton.addEventListener("click", handleRestartClick);
 
