@@ -1,78 +1,116 @@
 // #region Objects
-const pet = {
-  energy: 50,
-  happiness: 50,
-  hunger: 50,
+class PetDifficulty {
+  constructor(ui, difficulty = "medium") {
+    this.energy = 50;
+    this.happiness = 50;
+    this.hunger = 50;
+    this.decayRate = 2;
+    this.ui = ui;
+
+    switch (difficulty) {
+      case "easy":
+        this.energy = 60;
+        this.happiness = 60;
+        this.hunger = 40;
+        this.decayRate = 1;
+        break;
+      case "medium":
+        this.energy = 50;
+        this.happiness = 50;
+        this.hunger = 50;
+        this.decayRate = 2;
+        break;
+      case "hard":
+        this.energy = 40;
+        this.happiness = 40;
+        this.hunger = 60;
+        this.decayRate = 3;
+        break;
+    }
+  }
 
   rest() {
     if (this.energy <= 80) {
       this.energy = Math.min(this.energy + 10, 100);
-      this.happiness = Math.min(this.happiness + 2, 100);
-      this.hunger = Math.max(this.hunger + 5, 0);
-      ui.speak("Napping");
+      //this.happiness = Math.min(this.happiness + 2, 100);
+      //this.hunger = Math.max(this.hunger + 5, 0);
+      this.ui.speak("Napping");
     } else {
-      ui.speak("I'm not tired");
+      this.ui.speak("I'm not tired");
     }
-  },
+    this.ui.update();
+  }
 
   play() {
     if (this.happiness <= 80) {
-      this.energy = Math.min(this.energy - 5, 100);
+      //this.energy = Math.min(this.energy - 5, 100);
       this.happiness = Math.min(this.happiness + 10, 100);
-      this.hunger = Math.max(this.hunger + 5, 0);
-      ui.speak("Playing");
+      //this.hunger = Math.max(this.hunger + 5, 0);
+      this.ui.speak("Playing");
     } else {
-      ui.speak("I don't wanna play");
+      this.ui.speak("I don't wanna play");
     }
-  },
+  }
 
   feed() {
     if (this.hunger >= 20) {
-      this.energy = Math.min(this.energy + 2, 100);
-      this.happiness = Math.min(this.happiness + 2, 100);
+      //this.energy = Math.min(this.energy + 2, 100);
+      //this.happiness = Math.min(this.happiness + 2, 100);
       this.hunger = Math.max(this.hunger - 10, 0);
-      ui.speak("Eating");
+      this.ui.speak("Eating");
     } else {
-      ui.speak("I don't wanna eat");
+      this.ui.speak("I don't wanna eat");
     }
-  },
+  }
 
   Decay() {
-    this.energy = Math.max(this.energy - 1, 0);
-    this.happiness = Math.max(this.happiness - 2, 0);
-    this.hunger = Math.max(this.hunger + 1, 0);
-  },
-};
+    this.energy = Math.max(this.energy - this.decayRate, 0);
+    this.happiness = Math.max(this.happiness - this.decayRate, 0);
+    this.hunger = Math.max(this.hunger + this.decayRate, 0);
+  }
+}
 
-const ui = {
-  //energy related
-  energyBar: document.getElementById("energyBar"),
-  energyValue: document.getElementById("energyValue"),
-  restButton: document.getElementById("rest"),
+class UI {
+  constructor() {
+    this.pet = null;
 
-  //happiness related
-  happyBar: document.getElementById("happyBar"),
-  happyValue: document.getElementById("happyValue"),
-  playButton: document.getElementById("play"),
+    //energy
+    this.energyBar = document.getElementById("energyBar");
+    this.energyValue = document.getElementById("energyValue");
+    this.restButton = document.getElementById("rest");
 
-  //hunger related
-  hungerBar: document.getElementById("hungerBar"),
-  hungerValue: document.getElementById("hungerValue"),
-  feedButton: document.getElementById("feed"),
+    //happiness
+    this.happyBar = document.getElementById("happyBar");
+    this.happyValue = document.getElementById("happyValue");
+    this.playButton = document.getElementById("play");
 
-  petSpeech: document.getElementById("petSpeech"),
-  restartButton: document.getElementById("restartButton"),
-  petInfoContainer: document.querySelector(".pet-info-container"),
-  gameOverText: document.getElementById("gameOverText"),
-  gameOverContainer: document.getElementById("gameOverContainer"),
+    //hunger
+    this.hungerBar = document.getElementById("hungerBar");
+    this.hungerValue = document.getElementById("hungerValue");
+    this.feedButton = document.getElementById("feed");
 
-  petNameInput: document.getElementById("inputName"),
-  petNameDisplay: document.getElementById("displayName"),
+    //buttons
+    this.petSpeech = document.getElementById("petSpeech");
+    this.restartButton = document.getElementById("restartButton");
+    this.petInfoContainer = document.querySelector(".pet-info-container");
+    this.gameOverText = document.getElementById("gameOverText");
+    this.gameOverContainer = document.getElementById("gameOverContainer");
 
-  changePetName(){
+    //pet name
+    this.petNameInput = document.getElementById("inputName");
+    this.petNameDisplay = document.getElementById("displayName");
+
+    this.difficultySelect = document.getElementById("difficultySelect");
+  }
+
+  setPet(pet) {
+    this.pet = pet;
+  }
+
+  changePetName() {
     const name = this.petNameInput.value.trim();
     this.petNameDisplay.textContent = name || "Your Pet";
-  },
+  }
 
   barColour(bar, value) {
     if (value < 25) {
@@ -87,122 +125,128 @@ const ui = {
       bar.classList.remove("orange");
       bar.classList.add("green");
     }
-  },
+  }
 
   update() {
-    this.energyBar.value = pet.energy;
-    this.energyValue.textContent = pet.energy;
-    this.restButton.classList.toggle("inactive", pet.energy > 80);
+    this.energyBar.value = this.pet.energy;
+    this.energyValue.textContent = this.pet.energy;
+    this.restButton.classList.toggle("inactive", this.pet.energy > 80);
     this.barColour(this.energyBar, this.energyBar.value);
-    this.happyBar.value = pet.happiness;
-    this.happyValue.textContent = pet.happiness;
-    this.playButton.classList.toggle("inactive", pet.happiness > 80);
+    this.happyBar.value = this.pet.happiness;
+    this.happyValue.textContent = this.pet.happiness;
+    this.playButton.classList.toggle("inactive", this.pet.happiness > 80);
     this.barColour(this.happyBar, this.happyBar.value);
-    this.hungerBar.value = pet.hunger;
-    this.hungerValue.textContent = pet.hunger;
-    this.feedButton.classList.toggle("inactive", pet.hunger < 20);
+    this.hungerBar.value = this.pet.hunger;
+    this.hungerValue.textContent = this.pet.hunger;
+    this.feedButton.classList.toggle("inactive", this.pet.hunger < 20);
     this.barColour(this.hungerBar, 100 - this.hungerBar.value);
-  },
+  }
 
   speak(message) {
     this.petSpeech.textContent = message;
-  },
+  }
 
   showGameOvermessage(message) {
     this.petSpeech.textContent = "";
     this.gameOverText.textContent = message;
     this.gameOverContainer.classList.remove("hidden");
     this.petInfoContainer.classList.add("hidden");
-  },
+  }
 
   hideGameOvermessage() {
     this.gameOverContainer.classList.add("hidden");
     this.petInfoContainer.classList.remove("hidden");
-  },
+  }
 
   disableAllButtons() {
     this.restButton.disabled = true;
     this.playButton.disabled = true;
     this.feedButton.disabled = true;
-  },
+  }
 
   enableAllButtons() {
     this.restButton.disabled = false;
     this.playButton.disabled = false;
     this.feedButton.disabled = false;
-  },
-};
+  }
+}
 
-const game = {
-  timer: null,
-  isGameOver: false,
+class Game {
+  constructor(pet, ui) {
+    this.pet = pet;
+    this.ui = ui;
 
-  timePass() {
-    if (this.gameOver) {
-      return;
-    } else {
-      pet.Decay();
-      ui.update();
-      game.checkGameOver();
-    }
-  },
+    this.timer = null;
+    this.isGameOver = false;
+  }
+
+  timePass = () => {
+    if (this.isGameOver) return;
+    this.pet.Decay();
+    this.ui.update();
+    this.checkGameOver();
+  };
 
   start() {
-    this.timer = setInterval(game.timePass, 500);
-  },
+    this.timer = setInterval(this.timePass, 1500);
+  }
 
   stop() {
     clearInterval(this.timer);
-  },
+  }
 
   checkGameOver() {
-    if (pet.energy <= 0 || pet.happiness <= 0 || pet.hunger >= 100) {
+    if (this.pet.energy <= 0 || this.pet.happiness <= 0 || this.pet.hunger >= 100) {
       this.gameOver();
     }
-  },
+  }
 
   gameOver() {
     this.isGameOver = true;
     this.stop();
-    ui.showGameOvermessage("They died :(");
-    ui.disableAllButtons();
-  },
+    this.ui.showGameOvermessage("They died :(");
+    this.ui.disableAllButtons();
+  }
 
   restart() {
-    //restart game
-    pet.energy = 50;
-    pet.happiness = 50;
-    pet.hunger = 50;
+    const currentDifficulty = this.ui.difficultySelect.value;
+    this.pet = new PetDifficulty(this.ui, currentDifficulty);
+    this.ui.setPet(this.pet);
+
     this.isGameOver = false;
-    ui.hideGameOvermessage();
-    ui.enableAllButtons();
-    ui.update();
+    this.ui.hideGameOvermessage();
+    this.ui.enableAllButtons();
+    this.ui.update();
     this.start();
-  },
-};
+  }
+}
 // #endregion
 
+const ui = new UI();
+
+const pet = new PetDifficulty(ui, ui.difficultySelect.value);
+ui.setPet(pet);
+
+const game = new Game(pet, ui);
+
 // #region Functions
-function handlePetName(){
+function handlePetName() {
   ui.changePetName();
 }
 
 function handleRestClick() {
   pet.rest();
-  ui.update();
 }
 
 function handlePlayClick() {
   pet.play();
-  ui.update();
 }
 
 function handleFeedClick() {
   pet.feed();
-  ui.update();
 }
 
-function handleResetClick() {
+function handleRestartClick() {
   game.restart();
 }
 // #endregion
@@ -212,7 +256,9 @@ ui.petNameInput.addEventListener("input", handlePetName);
 ui.restButton.addEventListener("click", handleRestClick);
 ui.playButton.addEventListener("click", handlePlayClick);
 ui.feedButton.addEventListener("click", handleFeedClick);
-ui.restartButton.addEventListener("click", handleResetClick);
+ui.difficultySelect.addEventListener("input", handleRestartClick);
+ui.restartButton.addEventListener("click", handleRestartClick);
 
+ui.update();
 game.start();
 // #endregion
