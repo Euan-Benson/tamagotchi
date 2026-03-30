@@ -91,14 +91,12 @@ class UI {
     this.hungerValue = document.getElementById("hungerValue");
     this.feedButton = document.getElementById("feed");
 
-    //buttons
+    //buttons and text boxes
     this.petSpeech = document.getElementById("petSpeech");
     this.restartButton = document.getElementById("restartButton");
     this.petInfoContainer = document.querySelector(".pet-info-container");
     this.gameOverText = document.getElementById("gameOverText");
     this.gameOverContainer = document.getElementById("gameOverContainer");
-
-    //pet name
     this.petNameInput = document.getElementById("inputName");
     this.petNameDisplay = document.getElementById("displayName");
 
@@ -130,14 +128,17 @@ class UI {
   }
 
   update() {
+    //energy
     this.energyBar.value = this.pet.energy;
     this.energyValue.textContent = this.pet.energy;
     this.restButton.classList.toggle("inactive", this.pet.energy > 80);
     this.barColour(this.energyBar, this.energyBar.value);
+    //happiness
     this.happyBar.value = this.pet.happiness;
     this.happyValue.textContent = this.pet.happiness;
     this.playButton.classList.toggle("inactive", this.pet.happiness > 80);
     this.barColour(this.happyBar, this.happyBar.value);
+    //hunger
     this.hungerBar.value = this.pet.hunger;
     this.hungerValue.textContent = this.pet.hunger;
     this.feedButton.classList.toggle("inactive", this.pet.hunger < 20);
