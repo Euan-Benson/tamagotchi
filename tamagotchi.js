@@ -217,8 +217,9 @@ class Game {
 
   restart() {
     const currentDifficulty = this.ui.difficultySelect.value;
-    this.pet = new PetDifficulty(ui, currentDifficulty);
-    this.ui.setPet(this.pet);
+    newPet = new PetDifficulty(ui, currentDifficulty);
+    this.pet = newPet;
+    this.ui.setPet(newPet);
 
     this.isGameOver = false;
     this.ui.hideGameOvermessage();
@@ -231,10 +232,10 @@ class Game {
 
 const ui = new UI();
 
-const pet = new PetDifficulty(ui, ui.difficultySelect.value);
-ui.setPet(pet);
+let newPet = new PetDifficulty(ui, ui.difficultySelect.value);
+ui.setPet(newPet);
 
-const game = new Game(pet, ui);
+const game = new Game(newPet, ui);
 
 // #region Functions
 function handlePetName() {
@@ -242,15 +243,15 @@ function handlePetName() {
 }
 
 function handleRestClick() {
-  pet.rest();
+  newPet.rest();
 }
 
 function handlePlayClick() {
-  pet.play();
+  newPet.play();
 }
 
 function handleFeedClick() {
-  pet.feed();
+  newPet.feed();
 }
 
 function handleRestartClick() {
